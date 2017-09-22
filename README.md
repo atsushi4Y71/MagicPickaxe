@@ -1,4 +1,3 @@
 # Readme
 
-このリポジトリは下記サイトで公開したソースコードを保管しています。  
-http://minecraft-modding.hatenablog.com/
+各種ツールで一括採取可能なツールを追加します。
