@@ -42,20 +42,34 @@ public class MagicPickaxe extends ItemPickaxe {
         boolean whileContinueBool = true;
 
         ArrayList<BlockPos> destoryBlocks;
+        // 破壊したブロックの周囲を範囲を拡大しながらブロックを破壊する
         while(whileContinueBool) {
             destoryBlocks = getDestroyBlocks(min, max, worldIn, state, pos);
             
+            // リスト内のブロックを破壊する
             destoryBlocks.forEach(destoryPos -> worldIn.destroyBlock(destoryPos, true));
 
+            // 破壊範囲を拡大する
             min--;max++;
 
+            // 破壊範囲が上限に到達するかリストが空の場合は処理を終える
             if(max > DEFAULT_LIMIT_RANGE || destoryBlocks.isEmpty()) { break; }
         }
     }
     
+    /***
+     * 破壊するブロックを取得する。
+     * @param min 破壊する範囲の最小値
+     * @param max 破壊する範囲の最大値
+     * @param worldIn
+     * @param state
+     * @param pos
+     * @return 破壊するブロックの配列
+     */
     private ArrayList<BlockPos> getDestroyBlocks(int min, int max, World worldIn, IBlockState state, BlockPos pos) {
         ArrayList<BlockPos> resultDestoryBlocks = new ArrayList<BlockPos>();
         
+        // 破壊するブロックの座標を取得する
         Function<Integer, Function<Integer, Function<Integer, BlockPos>>> checker = (x) -> (y) -> (z) -> {
             BlockPos findPos = pos.add(x, y, z);
             IBlockState findState = worldIn.getBlockState(findPos);
@@ -67,11 +81,13 @@ public class MagicPickaxe extends ItemPickaxe {
             return null; 
         };
         
+        // ブロックの座標がNULLの場合はリストに追加しない
         Function<BlockPos, Consumer<ArrayList<BlockPos>>> adder = (findPos) -> (destroyBlocks) -> {
             if(findPos == null) { return; }
             destroyBlocks.add(findPos);
         };
 
+        // 破壊するブロックのリストを作成する
         for(int i=min; i<= max; i++) {
             for(int j=min; j<=max; j++) {
                 adder.apply(checker.apply(i).apply(j).apply(min)).accept(resultDestoryBlocks);
