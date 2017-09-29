@@ -1,7 +1,8 @@
 package upgradebasictools.item;
 
+import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -14,7 +15,7 @@ import upgradebasictools.ModMain;
 
 public class MagicPickaxe extends ItemPickaxe {
     
-    public static final int LIMIT_RANGE = 10;
+    public static final int DEFAULT_LIMIT_RANGE = 10;
 
     public MagicPickaxe() {
         super(ToolMaterial.DIAMOND);
@@ -30,64 +31,58 @@ public class MagicPickaxe extends ItemPickaxe {
         boolean result = super.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
 
         if(state.getBlock().getHarvestTool(state).equals("pickaxe") ) {
-            this.bulkDestroyBlock(worldIn, state, pos);
+            this.destroyBlocksAtOnce(worldIn, state, pos);
         }
         
         return result;
     }
     
-    private void bulkDestroyBlock(World worldIn, IBlockState state, BlockPos pos) {
+    private void destroyBlocksAtOnce(World worldIn, IBlockState state, BlockPos pos) {
         int min = -1, max = 1;
-
         boolean whileContinueBool = true;
 
-        Function<Integer, Function<Integer, Predicate<Integer>>> runner = (x) -> (y) -> (z) -> {
+        ArrayList<BlockPos> destoryBlocks;
+        while(whileContinueBool) {
+            destoryBlocks = getDestroyBlocks(min, max, worldIn, state, pos);
+            
+            destoryBlocks.forEach(destoryPos -> worldIn.destroyBlock(destoryPos, true));
+
+            min--;max++;
+
+            if(max > DEFAULT_LIMIT_RANGE || destoryBlocks.isEmpty()) { break; }
+        }
+    }
+    
+    private ArrayList<BlockPos> getDestroyBlocks(int min, int max, World worldIn, IBlockState state, BlockPos pos) {
+        ArrayList<BlockPos> resultDestoryBlocks = new ArrayList<BlockPos>();
+        
+        Function<Integer, Function<Integer, Function<Integer, BlockPos>>> checker = (x) -> (y) -> (z) -> {
             BlockPos findPos = pos.add(x, y, z);
             IBlockState findState = worldIn.getBlockState(findPos);
             Block findBlock = findState.getBlock();
             Block destroyedBlock = state.getBlock();
             if(destroyedBlock.equals(findBlock)) {
-                worldIn.destroyBlock(findPos, false);
-                return true;
+                return findPos;
             }
-            return false;
+            return null; 
+        };
+        
+        Function<BlockPos, Consumer<ArrayList<BlockPos>>> adder = (findPos) -> (destroyBlocks) -> {
+            if(findPos == null) { return; }
+            destroyBlocks.add(findPos);
         };
 
-        while(whileContinueBool) {
-            whileContinueBool = checkDestroyBlocks(min, max, runner);
-
-            min--;max++;
-
-            if(max > LIMIT_RANGE) { break; }
-        }
-    }
-    
-    private boolean checkDestroyBlocks(int min, int max, Function<Integer, Function<Integer, Predicate<Integer>>> runner) {
-        boolean checkContinue = false;
-        
-        for(int x = min; x <= max; x++) {
-            for(int y = min; y <= max; y++) {
-                if(runner.apply(x).apply(y).test(min)) {
-                    checkContinue = true;
-                }
-                if(runner.apply(x).apply(y).test(max)) {
-                    checkContinue = true;
-                }
-                if(runner.apply(min).apply(x).test(y)) {
-                    checkContinue = true;
-                }
-                if(runner.apply(max).apply(x).test(y)) {
-                    checkContinue = true;
-                }
-                if(runner.apply(y).apply(min).test(x)) {
-                    checkContinue = true;
-                }
-                if(runner.apply(y).apply(max).test(x)) {
-                    checkContinue = true;
-                }
+        for(int i=min; i<= max; i++) {
+            for(int j=min; j<=max; j++) {
+                adder.apply(checker.apply(i).apply(j).apply(min)).accept(resultDestoryBlocks);
+                adder.apply(checker.apply(i).apply(j).apply(max)).accept(resultDestoryBlocks);
+                adder.apply(checker.apply(j).apply(min).apply(i)).accept(resultDestoryBlocks);
+                adder.apply(checker.apply(j).apply(max).apply(i)).accept(resultDestoryBlocks);
+                adder.apply(checker.apply(min).apply(i).apply(j)).accept(resultDestoryBlocks);
+                adder.apply(checker.apply(max).apply(i).apply(j)).accept(resultDestoryBlocks);
             }
         }
         
-        return checkContinue;
+        return resultDestoryBlocks;
     }
 }
