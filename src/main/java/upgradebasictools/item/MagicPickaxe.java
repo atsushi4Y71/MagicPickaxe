@@ -1,14 +1,17 @@
 package upgradebasictools.item;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import upgradebasictools.ModMain;
@@ -32,11 +35,24 @@ public class MagicPickaxe extends ItemPickaxe {
 
         if(state.getBlock().getHarvestTool(state).equals("pickaxe") ) {
             this.destroyBlocksAtOnce(worldIn, state, pos);
+            
+            List<EntityItem> list = worldIn.getEntities(EntityItem.class, EntitySelectors.IS_ALIVE);
+            EntityItem entityItem = null;
+            for(EntityItem entity : list) {
+                if(entity.getItem().getItem().getUnlocalizedName().equals(state.getBlock().getUnlocalizedName())) {
+                    if(entityItem == null) {
+                        entityItem = entity;
+                    } else {
+                        entityItem.getItem().setCount(entityItem.getItem().getCount() + entity.getItem().getCount());
+                        worldIn.removeEntity(entity);
+                    }
+                }
+            }
         }
         
         return result;
     }
-    
+
     private void destroyBlocksAtOnce(World worldIn, IBlockState state, BlockPos pos) {
         int min = -1, max = 1;
         boolean whileContinueBool = true;
