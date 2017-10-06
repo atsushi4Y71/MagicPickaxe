@@ -1,5 +1,7 @@
-package upgradebasictools.proxy;
+package magicpikaxe.proxy;
 
+import magicpikaxe.ModItems;
+import magicpikaxe.ModMain;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -8,8 +10,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import upgradebasictools.ModItems;
-import upgradebasictools.ModMain;
 
 /***
  * クライアント側でリソースを読み込みます。

@@ -1,4 +1,4 @@
 # en_us.langでは読み込まれない orzi
 # 「_（アンダーバー）」は使えない
 # 複数単語の場合は2つ目の単語から頭文字を大文字で始める
-item.upgradebasictools.magickPickaxe.name=Magic Pickaxe
+item.magicpikaxe.magickPickaxe.name=Magic Pickaxe

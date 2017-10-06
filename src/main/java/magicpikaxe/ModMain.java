@@ -1,13 +1,13 @@
-package upgradebasictools;
+package magicpikaxe;
 
 import org.apache.logging.log4j.Logger;
 
+import magicpikaxe.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import upgradebasictools.proxy.CommonProxy;
 
 /***
  * Modの本体で、@Modを宣言することで本体として認識されます。<br>
@@ -21,7 +21,7 @@ import upgradebasictools.proxy.CommonProxy;
 public class ModMain {
 
     // Modの識別やリソースのドメイン名に利用されます
-    public static final String MODID = "upgradebasictools";
+    public static final String MODID = "magicpikaxe";
 
     // プロキシ（読み込み処理）のパッケージ階層
     public static final String CLIENT_PROXY = "upgradebasictools.proxy.ClientProxy";

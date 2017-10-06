@@ -1,10 +1,11 @@
-package upgradebasictools.item;
+package magicpikaxe.item;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import magicpikaxe.ModMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import upgradebasictools.ModMain;
 
 public class MagicPickaxe extends ItemPickaxe {
     
