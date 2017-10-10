@@ -1,11 +1,11 @@
-package magicpikaxe.item;
+package magicpickaxe.item;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import magicpikaxe.ModMain;
+import magicpickaxe.ModMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,7 +25,7 @@ public class MagicPickaxe extends ItemPickaxe {
 
         setRegistryName(ModMain.MODID, "magic_pickaxe");
         // 言語ファイルから一致する値をアイテム名として表示します
-        setUnlocalizedName(ModMain.MODID + ".magickPickaxe");
+        setUnlocalizedName(ModMain.MODID + ".magicPickaxe");
     }
     
     @Override
@@ -94,7 +94,7 @@ public class MagicPickaxe extends ItemPickaxe {
             if(destroyedBlock.equals(findBlock)) {
                 return findPos;
             }
-            return null; 
+            return null;
         };
         
         // ブロックの座標がNULLの場合はリストに追加しない

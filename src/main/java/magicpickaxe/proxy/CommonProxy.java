@@ -1,7 +1,7 @@
-package magicpikaxe.proxy;
+package magicpickaxe.proxy;
 
-import magicpikaxe.ModItems;
-import magicpikaxe.ModMain;
+import magicpickaxe.ModItems;
+import magicpickaxe.ModMain;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;

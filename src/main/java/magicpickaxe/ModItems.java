@@ -1,6 +1,6 @@
-package magicpikaxe;
+package magicpickaxe;
 
-import magicpikaxe.item.MagicPickaxe;
+import magicpickaxe.item.MagicPickaxe;
 import net.minecraft.item.Item;
 
 /***

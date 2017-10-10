@@ -1,8 +1,8 @@
-package magicpikaxe;
+package magicpickaxe;
 
 import org.apache.logging.log4j.Logger;
 
-import magicpikaxe.proxy.CommonProxy;
+import magicpickaxe.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -21,11 +21,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class ModMain {
 
     // Modの識別やリソースのドメイン名に利用されます
-    public static final String MODID = "magicpikaxe";
+    public static final String MODID = "magicpickaxe";
 
     // プロキシ（読み込み処理）のパッケージ階層
-    public static final String CLIENT_PROXY = "upgradebasictools.proxy.ClientProxy";
-    public static final String SERVER_PROXY = "upgradebasictools.proxy.ServerProxy";
+    public static final String CLIENT_PROXY = "magicpickaxe.proxy.ClientProxy";
+    public static final String SERVER_PROXY = "magicpickaxe.proxy.ServerProxy";
 
     // サーバー、クライアントを識別しインスタンスを保持します
     @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
