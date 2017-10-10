@@ -1,7 +1,7 @@
 [
 {
-  "modid": "upgradebasictools",
-  "name": "Upgrade Basic Tools",
+  "modid": "magicpickaxe",
+  "name": "Magic Pickaxe",
   "description": "Example placeholder mod.",
   "version": "0.0.1",
   "mcversion": "1.12",
