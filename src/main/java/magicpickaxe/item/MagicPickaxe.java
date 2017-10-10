@@ -28,16 +28,33 @@ public class MagicPickaxe extends ItemPickaxe {
         setUnlocalizedName(ModMain.MODID + ".magicPickaxe");
     }
     
+    /***
+     * ブロックを破壊した時に呼び出される。
+     * @param stack 破壊した時に手に持っているアイテム
+     * @param worldIn
+     * @param state IBlockState
+     * @param pos BlockPos 破壊したブロックの座標
+     * @param entityLiving entityLiving
+     */
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
-    {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
+        // 上書き元の処理をこちらに書くくらいなら呼び出した方が楽だと判断しました
+        // 条件の意味は分かりませんでしたが、手持ちのアイテムにダメージを与えている所を見ると耐久度を減らす処理のようです
         boolean result = super.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
 
+        // 破壊したブロックがピッケル適性の場合だけ隣接するブロックを破壊します
         if(state.getBlock().getHarvestTool(state).equals("pickaxe") ) {
+
+            // 隣接する同種ブロックを一括破壊する
             this.destroyBlocksAtOnce(worldIn, state, pos);
             
+            // 周辺のモブやドロップアイテムをエンティティと呼ぶんですが、それをまとめて取得しています
             List<EntityItem> list = worldIn.getEntities(EntityItem.class, EntitySelectors.IS_ALIVE);
             EntityItem entityItem = null;
+            
+            // エンティティを一つずつ破壊したブロックと同じか調べ、
+            // 同じ場合は一つのエンティティにまとめます
+            // ばらばらに落ちているアイテムを拾いに行くの面倒ですよね
             for(EntityItem entity : list) {
                 if(entity.getItem().getItem().getUnlocalizedName().equals(state.getBlock().getUnlocalizedName())) {
                     if(entityItem == null) {
@@ -53,6 +70,12 @@ public class MagicPickaxe extends ItemPickaxe {
         return result;
     }
 
+    /***
+     * 隣接する破壊したブロックと同種のブロックを一括破壊する
+     * @param worldIn
+     * @param state
+     * @param pos
+     */
     private void destroyBlocksAtOnce(World worldIn, IBlockState state, BlockPos pos) {
         int min = -1, max = 1;
         boolean whileContinueBool = true;
@@ -83,14 +106,21 @@ public class MagicPickaxe extends ItemPickaxe {
      * @return 破壊するブロックの配列
      */
     private ArrayList<BlockPos> getDestroyBlocks(int min, int max, World worldIn, IBlockState state, BlockPos pos) {
+        // 呼び出し元に返却する破壊するブロックの配列
         ArrayList<BlockPos> resultDestoryBlocks = new ArrayList<BlockPos>();
         
         // 破壊するブロックの座標を取得する
+        // ここはラムダ式なので後続の処理から呼び出される
         Function<Integer, Function<Integer, Function<Integer, BlockPos>>> checker = (x) -> (y) -> (z) -> {
+            // 壊したブロックを起点に隣接するブロックを取得
             BlockPos findPos = pos.add(x, y, z);
             IBlockState findState = worldIn.getBlockState(findPos);
             Block findBlock = findState.getBlock();
+
+            // 壊したブロック
             Block destroyedBlock = state.getBlock();
+
+            // 同種のブロックであれば破壊するブロックとして取得する
             if(destroyedBlock.equals(findBlock)) {
                 return findPos;
             }
@@ -106,6 +136,16 @@ public class MagicPickaxe extends ItemPickaxe {
         // 破壊するブロックのリストを作成する
         for(int i=min; i<= max; i++) {
             for(int j=min; j<=max; j++) {
+                /* 
+                 * どう説明していいのか分からない
+                 * 破壊したブロックを起点に次の順番に探索を行います
+                 * x y zの最小値
+                 * x y zの最大値
+                 * z x yの最小値
+                 * z x yの最大値
+                 * y z xの最小値
+                 * y z xの最大値
+                 */
                 adder.apply(checker.apply(i).apply(j).apply(min)).accept(resultDestoryBlocks);
                 adder.apply(checker.apply(i).apply(j).apply(max)).accept(resultDestoryBlocks);
                 adder.apply(checker.apply(j).apply(min).apply(i)).accept(resultDestoryBlocks);
